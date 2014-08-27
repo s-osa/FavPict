@@ -9,7 +9,7 @@ public class FavPictsDBHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
     private static final String CREATE_PICTS = "CREATE TABLE picts (" +
             "_id integer primary key autoincrement, " +
-            "image blob not null, " +
+            "uri text not null, " +
             "description text not null" +
             ");";
 

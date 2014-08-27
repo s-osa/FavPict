@@ -6,21 +6,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.io.InputStream;
+import org.w3c.dom.Text;
 
-import example.android.favpicts.R;
+import java.io.InputStream;
 
 public class AddPictActivity extends Activity {
     private static final int REQUEST_PICK_PICT = 3000;
@@ -44,9 +41,8 @@ public class AddPictActivity extends Activity {
         savePictButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImageView imageView = (ImageView) findViewById(R.id.iv_selected_image);
-                BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
-                Bitmap image = bitmapDrawable.getBitmap();
+                TextView textView = (TextView) findViewById(R.id.tv_uri);
+                String uri = textView.getText().toString();
 
                 EditText editText = (EditText) findViewById(R.id.et_description);
                 String description = editText.getText().toString();
@@ -54,13 +50,10 @@ public class AddPictActivity extends Activity {
                 FavPictsDBHelper helper = new FavPictsDBHelper(AddPictActivity.this);
                 SQLiteDatabase db = helper.getWritableDatabase();
 
-                String sql = "INSERT INTO picts(image, description) values (?, ?);";
-                Object[] elements = new Object[] {image, description};
-                db.execSQL(sql, elements);
+                db.execSQL("INSERT INTO picts(uri, description) values (?, ?);", new Object[] {uri, description});
 
-                int records = getCount(db);
-
-                Toast.makeText(AddPictActivity.this, records + " picts exists.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddPictActivity.this, getCount(db) + " picts exists.", Toast.LENGTH_SHORT).show();
+                finish();
             }
 
             private int getCount(SQLiteDatabase db) {
@@ -85,6 +78,13 @@ public class AddPictActivity extends Activity {
 
                     ImageView imageView = (ImageView) findViewById(R.id.iv_selected_image);
                     imageView.setImageBitmap(image);
+                    imageView.setVisibility(View.VISIBLE);
+
+                    TextView textView = (TextView) findViewById(R.id.tv_uri);
+                    textView.setText(data.getData().toString());
+
+                    Button saveButton = (Button) findViewById(R.id.bt_save);
+                    saveButton.setEnabled(true);
                 } catch(Exception e) {
                 }
             }

@@ -7,14 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-
-import java.lang.reflect.Array;
-import java.util.List;
-
 
 public class PictListActivity extends Activity {
 
@@ -22,23 +16,20 @@ public class PictListActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pict_list);
+    }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         FavPictsDBHelper helper = new FavPictsDBHelper(this);
         SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.query("picts", new String[]{"_id", "image", "description"}, null, null, null, null, "_id");
+        Cursor cursor = db.query("picts", new String[]{"_id", "uri", "description"}, null, null, null, null, "_id");
 
-        String[] cols = new String[]{"image", "description"};
+        String[] cols = new String[]{"uri", "description"};
         int[] viewIds = new int[]{R.id.iv_image, R.id.description};
 
         SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this, R.layout.pict_row, cursor, cols, viewIds, 0);
-
-         while(cursor.moveToNext()) {
-         adapter.add(cursor.getString(2));
-         }
-
-        db.close();
 
         ListView listView = (ListView) findViewById(R.id.picts);
         listView.setEmptyView(findViewById(R.id.empty));

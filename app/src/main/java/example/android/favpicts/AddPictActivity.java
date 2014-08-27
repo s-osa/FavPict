@@ -2,6 +2,8 @@ package example.android.favpicts;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -42,18 +44,32 @@ public class AddPictActivity extends Activity {
         savePictButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(AddPictActivity.this, "Save clicked!", Toast.LENGTH_SHORT).show();
-
                 ImageView imageView = (ImageView) findViewById(R.id.iv_selected_image);
                 BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
                 Bitmap image = bitmapDrawable.getBitmap();
 
-                Toast.makeText(AddPictActivity.this, image.toString(), Toast.LENGTH_SHORT).show();
-
                 EditText editText = (EditText) findViewById(R.id.et_description);
                 String description = editText.getText().toString();
 
-                Toast.makeText(AddPictActivity.this, description, Toast.LENGTH_SHORT).show();
+                FavPictsDBHelper helper = new FavPictsDBHelper(AddPictActivity.this);
+                SQLiteDatabase db = helper.getWritableDatabase();
+
+                String sql = "INSERT INTO picts(image, description) values (?, ?);";
+                Object[] elements = new Object[] {image, description};
+                db.execSQL(sql, elements);
+
+                int records = getCount(db);
+
+                Toast.makeText(AddPictActivity.this, records + " picts exists.", Toast.LENGTH_SHORT).show();
+            }
+
+            private int getCount(SQLiteDatabase db) {
+                String sql = "select count(*) from picts;";
+                Cursor c = db.rawQuery(sql, null);
+                c.moveToLast();
+                int count = c.getInt(0);
+                c.close();
+                return count;
             }
         });
     }

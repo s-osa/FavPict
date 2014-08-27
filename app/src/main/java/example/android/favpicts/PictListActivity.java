@@ -2,11 +2,15 @@ package example.android.favpicts;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 import java.lang.reflect.Array;
 import java.util.List;
@@ -19,11 +23,26 @@ public class PictListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pict_list);
 
-        String[] array = {"hoge", "fuga"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, array);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+
+        FavPictsDBHelper helper = new FavPictsDBHelper(this);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.query("picts", new String[]{"_id", "image", "description"}, null, null, null, null, "_id");
+
+        String[] cols = new String[]{"image", "description"};
+        int[] viewIds = new int[]{R.id.iv_image, R.id.description};
+
+        SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this, R.layout.pict_row, cursor, cols, viewIds, 0);
+
+         while(cursor.moveToNext()) {
+         adapter.add(cursor.getString(2));
+         }
+
+        db.close();
 
         ListView listView = (ListView) findViewById(R.id.picts);
-        listView.setAdapter(adapter);
+        listView.setEmptyView(findViewById(R.id.empty));
+        listView.setAdapter(cursorAdapter);
     }
 
     @Override

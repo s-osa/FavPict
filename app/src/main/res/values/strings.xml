@@ -9,6 +9,7 @@
     <string name="save">Save</string>
 
     <string name="add_pict">Add Pict</string>
+    <string name="no_picts">No picts</string>
     <string name="title_activity_add_pict">Add Pict</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>

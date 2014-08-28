@@ -6,6 +6,7 @@
     <string name="description">Description</string>
     <string name="select">Select</string>
     <string name="save">Save</string>
+    <string name="delete">Delete</string>
     <string name="add_pict">Add Pict</string>
     <string name="no_picts">No picts</string>
     <string name="title_activity_add_pict">Add Pict</string>

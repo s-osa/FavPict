@@ -1,6 +1,7 @@
 package example.android.favpicts;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,9 +9,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class EditPictActivity extends Activity {
 
@@ -46,6 +50,42 @@ public class EditPictActivity extends Activity {
 
         EditText editText = (EditText) findViewById(R.id.et_description);
         editText.setText(description);
+
+        Button saveButton = (Button) findViewById(R.id.bt_save);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText editedText = (EditText) findViewById(R.id.et_description);
+                String newDescription = editedText.getText().toString();
+
+                TextView pictIdText = (TextView) findViewById(R.id.pict_id);
+                String pictId = pictIdText.getText().toString();
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("description", newDescription);
+
+                FavPictsDBHelper helper = new FavPictsDBHelper(EditPictActivity.this);
+                SQLiteDatabase db = helper.getWritableDatabase();
+
+                db.update("picts", contentValues, "_id = ?", new String[]{pictId});
+
+                Toast.makeText(EditPictActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(EditPictActivity.this, PictListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button deleteButton = (Button) findViewById(R.id.bt_delete);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(EditPictActivity.this, "Delete clicked!", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(EditPictActivity.this, PictListActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 

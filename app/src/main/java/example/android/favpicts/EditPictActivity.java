@@ -1,7 +1,9 @@
 package example.android.favpicts;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -80,10 +82,36 @@ public class EditPictActivity extends Activity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(EditPictActivity.this, "Delete clicked!", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder dialog = new AlertDialog.Builder(EditPictActivity.this);
 
-                Intent intent = new Intent(EditPictActivity.this, PictListActivity.class);
-                startActivity(intent);
+                TextView pictIdText = (TextView) findViewById(R.id.pict_id);
+                final String pictId = pictIdText.getText().toString();
+
+                dialog.setTitle("Confirmation");
+                dialog.setMessage("Are you sure to delete this pict?");
+
+                dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        FavPictsDBHelper helper = new FavPictsDBHelper(EditPictActivity.this);
+                        SQLiteDatabase db = helper.getWritableDatabase();
+
+                        db.delete("picts", "_id = ?", new String[]{pictId});
+
+                        Toast.makeText(EditPictActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(EditPictActivity.this, PictListActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
+                dialog.setNegativeButton("Do not delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+
+                dialog.show();
             }
         });
     }

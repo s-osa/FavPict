@@ -2,16 +2,15 @@
 <resources>
 
     <string name="app_name">FavPicts</string>
-
     <string name="pict">Pict</string>
     <string name="description">Description</string>
     <string name="select">Select</string>
     <string name="save">Save</string>
-
     <string name="add_pict">Add Pict</string>
     <string name="no_picts">No picts</string>
     <string name="title_activity_add_pict">Add Pict</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_edit_pict">Edit</string>
 
 </resources>

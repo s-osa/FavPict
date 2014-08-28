@@ -20,6 +20,10 @@
             android:name=".AddPictActivity"
             android:label="@string/title_activity_add_pict" >
         </activity>
+        <activity
+            android:name=".EditPictActivity"
+            android:label="@string/title_activity_edit_pict" >
+        </activity>
     </application>
 
 </manifest>
